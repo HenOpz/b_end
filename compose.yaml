@@ -1,0 +1,20 @@
+services:
+  backend:
+    build:
+      context: .
+    ports:
+      - 7129:80
+    networks:
+      - my_network
+    restart: always
+  app:
+    image: fend:latest
+    ports:
+      - 8081:8081
+    depends_on:
+      - backend
+    networks:
+      - my_network
+networks:
+  my_network:
+    driver: bridge

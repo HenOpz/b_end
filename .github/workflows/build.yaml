@@ -1,0 +1,20 @@
+name: "Build Reusable Workflow For Node app"
+
+on:
+  workflow_call:
+    inputs:
+      dotnet-version:
+        required: true
+        type: string
+jobs:
+  build:
+    name: Build DotNet App
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+     
+    - uses: HenOpz/b_end/.github/prepare-action@main
+
+    - name: Build
+      run: dotnet build --no-restore

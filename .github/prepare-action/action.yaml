@@ -1,0 +1,19 @@
+name: Composite Action
+description: A composite action to build node applications
+inputs:
+  dotnet-version:
+    required: true
+    type: string
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v4.0.1
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}  # Ensure you're using .NET 7.x
+    
+    - name: Install dependencies
+      run: dotnet restore

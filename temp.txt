@@ -1,0 +1,47 @@
+# Stage 1: Build Stage
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
+WORKDIR /app
+
+# Copy project file and restore dependencies
+COPY *.csproj ./
+RUN dotnet restore
+
+# Clear NuGet cache (optional, if needed)
+RUN dotnet nuget locals all --clear
+
+# Copy the entire project
+COPY . .
+# Copy and configure SSL certificates (replace with your actual certificate files)
+# COPY server.pem ./server.pem
+# COPY key.pem ./key.pem
+# Optionally, you can run tests here if needed
+# RUN dotnet test --no-build
+# Publish the application
+RUN dotnet publish -c Release -o out
+# Stage 2: Runtime Image
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
+WORKDIR /app
+
+# Copy published output from build stage
+COPY --from=build-env /app/out .
+RUN dotnet dev-certs https
+RUN dotnet dev-certs https --trust
+# Set environment variables
+ENV ASPNETCORE_URLS=https://+:443;http://+:80
+ENV ASPNETCORE_HTTPS_PORT=443
+
+# Expose ports
+EXPOSE 80
+EXPOSE 443
+
+# Copy and configure SSL certificates (replace with your actual certificate files)
+# COPY --from=build-env ./app/server.pem ./https/server.pem
+# COPY --from=build-env ./app/key.pem ./https/key.pem
+
+
+# Copy Swagger JSON files (assuming they are in the root directory)
+COPY *.json ./
+# Configure Swagger UI URL
+ENV SWAGGER_URL=/swagger
+# Entry point for the application
+ENTRYPOINT ["dotnet", "CPOC-AIMS-II-Backend.dll"]

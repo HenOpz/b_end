@@ -1,0 +1,133 @@
+{
+  "Files": [
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/assets/cpoc_logo_new.png",
+      "PackagePath": "staticwebassets/assets/cpoc_logo_new.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/ex_insp_info/MicrosoftTeams-image.png",
+      "PackagePath": "staticwebassets/attach/ex_insp_info/MicrosoftTeams-image.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/failure/920240424134311.png",
+      "PackagePath": "staticwebassets/attach/failure/920240424134311.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/failure/9__20240523093035.png",
+      "PackagePath": "staticwebassets/attach/failure/9__20240523093035.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/failure/MicrosoftTeams-image__20240530142844.png",
+      "PackagePath": "staticwebassets/attach/failure/MicrosoftTeams-image__20240530142844.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/failure/MicrosoftTeams-image__20240530142852.png",
+      "PackagePath": "staticwebassets/attach/failure/MicrosoftTeams-image__20240530142852.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/failure/cpoc_logo_new__20240523093018.png",
+      "PackagePath": "staticwebassets/attach/failure/cpoc_logo_new__20240523093018.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/failure/pexels-christian-heitz-285904-842711__20240607153157.jpg",
+      "PackagePath": "staticwebassets/attach/failure/pexels-christian-heitz-285904-842711__20240607153157.jpg"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/100-1000-1065-08 _2CML__20240607154827.jpeg",
+      "PackagePath": "staticwebassets/attach/gpi/100-1000-1065-08 _2CML__20240607154827.jpeg"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/11111__20240607155132.png",
+      "PackagePath": "staticwebassets/attach/gpi/11111__20240607155132.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/11112__20240607155140.png",
+      "PackagePath": "staticwebassets/attach/gpi/11112__20240607155140.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/11113__20240607155149.png",
+      "PackagePath": "staticwebassets/attach/gpi/11113__20240607155149.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/11114__20240607154531.png",
+      "PackagePath": "staticwebassets/attach/gpi/11114__20240607154531.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/11114__20240607155157.png",
+      "PackagePath": "staticwebassets/attach/gpi/11114__20240607155157.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/MicrosoftTeams-image__20240528161337.png",
+      "PackagePath": "staticwebassets/attach/gpi/MicrosoftTeams-image__20240528161337.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/MicrosoftTeams-image__20240528161515.png",
+      "PackagePath": "staticwebassets/attach/gpi/MicrosoftTeams-image__20240528161515.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/MicrosoftTeams-image__20240528162027.png",
+      "PackagePath": "staticwebassets/attach/gpi/MicrosoftTeams-image__20240528162027.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/MicrosoftTeams-image__20240528162452.png",
+      "PackagePath": "staticwebassets/attach/gpi/MicrosoftTeams-image__20240528162452.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/MicrosoftTeams-image__20240529153625.png",
+      "PackagePath": "staticwebassets/attach/gpi/MicrosoftTeams-image__20240529153625.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/MicrosoftTeams-image__20240529153631.png",
+      "PackagePath": "staticwebassets/attach/gpi/MicrosoftTeams-image__20240529153631.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/MicrosoftTeams-image__20240529161811.png",
+      "PackagePath": "staticwebassets/attach/gpi/MicrosoftTeams-image__20240529161811.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/MicrosoftTeams-image__20240529161917.png",
+      "PackagePath": "staticwebassets/attach/gpi/MicrosoftTeams-image__20240529161917.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/MicrosoftTeams-image__20240529162402.png",
+      "PackagePath": "staticwebassets/attach/gpi/MicrosoftTeams-image__20240529162402.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/Screenshot 2567-06-04 at 03.36.27__20240604033746.png",
+      "PackagePath": "staticwebassets/attach/gpi/Screenshot 2567-06-04 at 03.36.27__20240604033746.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/Screenshot 2567-06-04 at 03.36.41__20240604033753.png",
+      "PackagePath": "staticwebassets/attach/gpi/Screenshot 2567-06-04 at 03.36.41__20240604033753.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/Screenshot 2567-06-04 at 03.36.53__20240604033759.png",
+      "PackagePath": "staticwebassets/attach/gpi/Screenshot 2567-06-04 at 03.36.53__20240604033759.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/gpi/Screenshot 2567-06-04 at 03.37.10__20240604033805.png",
+      "PackagePath": "staticwebassets/attach/gpi/Screenshot 2567-06-04 at 03.37.10__20240604033805.png"
+    },
+    {
+      "Id": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/wwwroot/attach/insp_task/MicrosoftTeams-image_20240605085443.png",
+      "PackagePath": "staticwebassets/attach/insp_task/MicrosoftTeams-image_20240605085443.png"
+    },
+    {
+      "Id": "obj/Debug/net7.0/staticwebassets/msbuild.CPOC-AIMS-II-Backend.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net7.0/staticwebassets/msbuild.build.CPOC-AIMS-II-Backend.props",
+      "PackagePath": "build\\CPOC-AIMS-II-Backend.props"
+    },
+    {
+      "Id": "obj/Debug/net7.0/staticwebassets/msbuild.buildMultiTargeting.CPOC-AIMS-II-Backend.props",
+      "PackagePath": "buildMultiTargeting\\CPOC-AIMS-II-Backend.props"
+    },
+    {
+      "Id": "obj/Debug/net7.0/staticwebassets/msbuild.buildTransitive.CPOC-AIMS-II-Backend.props",
+      "PackagePath": "buildTransitive\\CPOC-AIMS-II-Backend.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
