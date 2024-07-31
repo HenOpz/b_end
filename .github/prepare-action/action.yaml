@@ -16,5 +16,5 @@ runs:
         dotnet-version: ${{ inputs.dotnet-version }} # Ensure you're using .NET 7.x
 
     - name: Install dependencies
-      run: |
-        dotnet restore
+      run: dotnet restore
+      shell: bash
