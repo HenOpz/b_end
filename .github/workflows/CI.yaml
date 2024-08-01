@@ -13,7 +13,7 @@ jobs:
     name: Build
     uses: HenOpz/b_end/.github/workflows/build.yaml@main
     with:
-      dotnet-version: '7.0.19'
+      dotnet-version: '7.0'
 
   codeql:
     name: Scan Code QL
@@ -25,14 +25,14 @@ jobs:
     needs: [build]
     uses: HenOpz/b_end/.github/workflows/test.yaml@main
     with:
-      dotnet-version: '7.0.19'
+      dotnet-version: '7.0'
 
   release:
     name: Release
     needs: [test]
     uses: HenOpz/b_end/.github/workflows/release.yaml@main
     with:
-      dotnet-version: '7.0.19'
+      dotnet-version: '7.0'
 
   # sec:
   #   name: Sec Check
