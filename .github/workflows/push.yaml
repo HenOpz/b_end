@@ -19,10 +19,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - uses: HenOpz/b_end/.github/prepare-action@main
-      with:
-        dotnet-version: ${{ inputs.dotnet-version }}
-        
     - name: Docker Build
       uses: docker/setup-buildx-action@v3.3.0
 

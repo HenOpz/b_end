@@ -34,15 +34,13 @@ jobs:
     with:
       dotnet-version: '7.0.x'
 
-  # sec:
-  #   name: Sec Check
-  #   needs: [test]
-  #   uses: HenOpz/f_end/.github/workflows/security.yaml@main
-  #   secrets:
-  #     GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
-  #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #   with:
-  #     dotnet-version: '7.0.x'
+  sec:
+    name: Sec Check
+    needs: [test]
+    uses: HenOpz/f_end/.github/workflows/security.yaml@main
+    secrets:
+      GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   push:
     name: Push
@@ -51,8 +49,6 @@ jobs:
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-    with:
-      dotnet-version: '7.0.x'
 
   # deploy:
   #   name: Deploy
