@@ -30,7 +30,7 @@ jobs:
   release:
     name: Release
     needs: [test]
-    uses: HenOpz/f_end/.github/workflows/release.yaml@main
+    uses: HenOpz/b_end/.github/workflows/release.yaml@main
     with:
       dotnet-version: '7.0.19'
 
