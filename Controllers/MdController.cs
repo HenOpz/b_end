@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Data;
 
 namespace CPOC_AIMS_II_Backend.Controllers
@@ -15,8 +16,6 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		{
 			_context = context;
 		}
-
-		string sqlDataSource = Startup.ConnectionString;
 		
 		#region MdAppModule
 		[HttpGet]
@@ -2235,6 +2234,28 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			}
 			return data;
 		}
+		
+		[HttpGet]
+		[Route("get-md-sap-functional-location-by-platform")]
+		public async Task<ActionResult<List<MdSapFunctionalLocation>>> GetMdSapFunctionalLocation(string platform)
+		{
+			if(platform == "MDPP")
+			{
+				platform = "MPP";
+			}
+			else if(platform == "MDLQ")
+			{
+				platform = "MLQ";
+			}
+			var data = await _context.MdSapFunctionalLocation
+											.Where(a => a.functional_location != null && a.functional_location.Contains(platform))
+											.ToListAsync();
+			if(!data.Any())
+			{
+				return NotFound();
+			}
+			return data;
+		}
 
 		[HttpPost]
 		[Route("add-md-sap-functional-location")]
@@ -4042,7 +4063,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 
 
-        [HttpDelete]
+		[HttpDelete]
 		[Route("delete-md-ex-insp-discip-line")]
 		public async Task<IActionResult> DeleteMdExInspectionDiscipline(int id)
 		{
@@ -4121,7 +4142,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 
 
-        [HttpDelete]
+		[HttpDelete]
 		[Route("delete-md-ex-insp-gas-group")]
 		public async Task<IActionResult> DeleteMdExInspectionGasGroup(int id)
 		{
@@ -4200,7 +4221,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 
 
-        [HttpDelete]
+		[HttpDelete]
 		[Route("delete-md-ex-insp-location")]
 		public async Task<IActionResult> DeleteMdExInspectionLocation(int id)
 		{
@@ -4279,7 +4300,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 
 
-        [HttpDelete]
+		[HttpDelete]
 		[Route("delete-md-ex-insp-zone")]
 		public async Task<IActionResult> DeleteMdExInspectionZone(int id)
 		{
@@ -4358,7 +4379,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 
 
-        [HttpDelete]
+		[HttpDelete]
 		[Route("delete-md-gpi-repair")]
 		public async Task<IActionResult> DeleteMdGpiRepair(int id)
 		{
@@ -4437,7 +4458,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 
 
-        [HttpDelete]
+		[HttpDelete]
 		[Route("delete-md-gpi-repair-type")]
 		public async Task<IActionResult> DeleteMdGpiRepairType(int id)
 		{
@@ -4516,7 +4537,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 
 
-        [HttpDelete]
+		[HttpDelete]
 		[Route("delete-md-gpi-main-component")]
 		public async Task<IActionResult> DeleteMdGpiMainComponent(int id)
 		{
@@ -4595,7 +4616,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 
 
-        [HttpDelete]
+		[HttpDelete]
 		[Route("delete-md-gpi-damage-mechanism")]
 		public async Task<IActionResult> DeleteMdGpiDamageMechanism(int id)
 		{
@@ -4674,7 +4695,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 
 
-        [HttpDelete]
+		[HttpDelete]
 		[Route("delete-md-gpi-severity")]
 		public async Task<IActionResult> DeleteMdGpiSeverityStatus(int id)
 		{
@@ -4693,7 +4714,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			return _context.MdGpiSeverityStatus.Any(e => e.id == id);
 		}
 		#endregion
-		
+
 		#region MdGpiLocationDeck
 		[HttpGet]
 		[Route("get-md-gpi-location-deck-list")]
@@ -4753,7 +4774,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 
 
-        [HttpDelete]
+		[HttpDelete]
 		[Route("delete-md-gpi-location-deck")]
 		public async Task<IActionResult> DeleteMdGpiLocationDeck(int id)
 		{
@@ -4772,6 +4793,739 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			return _context.MdGpiLocationDeck.Any(e => e.id == id);
 		}
 		#endregion
+		
+		#region MdGpiDiscipline
+		[HttpGet]
+		[Route("get-md-gpi-discipline-list")]
+		public async Task<ActionResult<IEnumerable<MdGpiDiscipline>>> GetMdGpiDisciplineList()
+		{
+			return await _context.MdGpiDiscipline.ToListAsync();
+		}
 
+		[HttpGet]
+		[Route("get-md-gpi-discipline-by-id")]
+		public async Task<ActionResult<MdGpiDiscipline>> GetMdGpiDiscipline(int id)
+		{
+			var data = await _context.MdGpiDiscipline.FindAsync(id);
+
+			if(data == null)
+			{
+				return NotFound();
+			}
+			return data;
+		}
+
+		[HttpPost]
+		[Route("add-md-gpi-discipline")]
+		public async Task<ActionResult<MdGpiDiscipline>> AddMdGpiDiscipline(MdGpiDiscipline form)
+		{
+			_context.MdGpiDiscipline.Add(form);
+			await _context.SaveChangesAsync();
+
+			return CreatedAtAction("GetMdGpiDiscipline", new { id = form.id }, form);
+		}
+
+		[HttpPut]
+		[Route("edit-md-gpi-discipline")]
+		public async Task<IActionResult> EditMdGpiDiscipline(int id, MdGpiDiscipline form)
+		{
+			if(id != form.id)
+			{
+				return BadRequest();
+			}
+			_context.Entry(form).State = EntityState.Modified;
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!MdGpiDisciplineExists(id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return NoContent();
+		}
+
+
+		[HttpDelete]
+		[Route("delete-md-gpi-discipline")]
+		public async Task<IActionResult> DeleteMdGpiDiscipline(int id)
+		{
+			var data = await _context.MdGpiDiscipline.FindAsync(id);
+			if (data == null) 
+			{
+				return NotFound();
+			}
+			_context.MdGpiDiscipline.Remove(data);
+			await _context.SaveChangesAsync();
+			return NoContent();
+		}
+
+		private bool MdGpiDisciplineExists(int id)
+		{
+			return _context.MdGpiDiscipline.Any(e => e.id == id);
+		}
+		#endregion
+
+		#region MdCMMicroBacteriaStatus
+		[HttpGet]
+		[Route("get-md-cm-micro-bact-status-list")]
+		public async Task<ActionResult<IEnumerable<MdCMMicroBacteriaStatus>>> GetMdCMMicroBacteriaStatusList()
+		{
+			return await _context.MdCMMicroBacteriaStatus.ToListAsync();
+		}
+
+		[HttpGet]
+		[Route("get-md-cm-micro-bact-status-by-id")]
+		public async Task<ActionResult<MdCMMicroBacteriaStatus>> GetMdCMMicroBacteriaStatus(int id)
+		{
+			var data = await _context.MdCMMicroBacteriaStatus.FindAsync(id);
+
+			if(data == null)
+			{
+				return NotFound();
+			}
+			return data;
+		}
+
+		[HttpPost]
+		[Route("add-md-cm-micro-bact-status")]
+		public async Task<ActionResult<MdCMMicroBacteriaStatus>> AddMdCMMicroBacteriaStatus(MdCMMicroBacteriaStatus form)
+		{
+			_context.MdCMMicroBacteriaStatus.Add(form);
+			await _context.SaveChangesAsync();
+
+			return CreatedAtAction("GetMdCMMicroBacteriaStatus", new { id = form.id }, form);
+		}
+
+		[HttpPut]
+		[Route("edit-md-cm-micro-bact-status")]
+		public async Task<IActionResult> EditMdCMMicroBacteriaStatus(int id, MdCMMicroBacteriaStatus form)
+		{
+			if(id != form.id)
+			{
+				return BadRequest();
+			}
+			_context.Entry(form).State = EntityState.Modified;
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!MdCMMicroBacteriaStatusExists(id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return NoContent();
+		}
+
+
+		[HttpDelete]
+		[Route("delete-md-cm-micro-bact-status")]
+		public async Task<IActionResult> DeleteMdCMMicroBacteriaStatus(int id)
+		{
+			var data = await _context.MdCMMicroBacteriaStatus.FindAsync(id);
+			if (data == null) 
+			{
+				return NotFound();
+			}
+			_context.MdCMMicroBacteriaStatus.Remove(data);
+			await _context.SaveChangesAsync();
+			return NoContent();
+		}
+
+		private bool MdCMMicroBacteriaStatusExists(int id)
+		{
+			return _context.MdCMMicroBacteriaStatus.Any(e => e.id == id);
+		}
+		#endregion
+
+		#region MdCMChemInjectionStatus
+		[HttpGet]
+		[Route("get-md-cm-chem-inj-status-list")]
+		public async Task<ActionResult<IEnumerable<MdCMChemInjectionStatus>>> GetMdCMChemInjectionStatusList()
+		{
+			return await _context.MdCMChemInjectionStatus.ToListAsync();
+		}
+
+		[HttpGet]
+		[Route("get-md-cm-chem-inj-status-by-id")]
+		public async Task<ActionResult<MdCMChemInjectionStatus>> GetMdCMChemInjectionStatus(int id)
+		{
+			var data = await _context.MdCMChemInjectionStatus.FindAsync(id);
+
+			if(data == null)
+			{
+				return NotFound();
+			}
+			return data;
+		}
+
+		[HttpPost]
+		[Route("add-md-cm-chem-inj-status")]
+		public async Task<ActionResult<MdCMChemInjectionStatus>> AddMdCMChemInjectionStatus(MdCMChemInjectionStatus form)
+		{
+			_context.MdCMChemInjectionStatus.Add(form);
+			await _context.SaveChangesAsync();
+
+			return CreatedAtAction("GetMdCMChemInjectionStatus", new { id = form.id }, form);
+		}
+
+		[HttpPut]
+		[Route("edit-md-cm-chem-inj-status")]
+		public async Task<IActionResult> EditMdCMChemInjectionStatus(int id, MdCMChemInjectionStatus form)
+		{
+			if(id != form.id)
+			{
+				return BadRequest();
+			}
+			_context.Entry(form).State = EntityState.Modified;
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!MdCMChemInjectionStatusExists(id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return NoContent();
+		}
+
+
+		[HttpDelete]
+		[Route("delete-md-cm-chem-inj-status")]
+		public async Task<IActionResult> DeleteMdCMChemInjectionStatus(int id)
+		{
+			var data = await _context.MdCMChemInjectionStatus.FindAsync(id);
+			if (data == null) 
+			{
+				return NotFound();
+			}
+			_context.MdCMChemInjectionStatus.Remove(data);
+			await _context.SaveChangesAsync();
+			return NoContent();
+		}
+
+		private bool MdCMChemInjectionStatusExists(int id)
+		{
+			return _context.MdCMChemInjectionStatus.Any(e => e.id == id);
+		}
+		#endregion
+
+		#region MdFailurePOF
+		[HttpGet]
+		[Route("get-md-failure-pof-list")]
+		public async Task<ActionResult<IEnumerable<MdFailurePOF>>> GetMdFailurePOFList()
+		{
+			return await _context.MdFailurePOF.ToListAsync();
+		}
+
+		[HttpGet]
+		[Route("get-md-failure-pof-by-id")]
+		public async Task<ActionResult<MdFailurePOF>> GetMdFailurePOF(int id)
+		{
+			var data = await _context.MdFailurePOF.FindAsync(id);
+
+			if(data == null)
+			{
+				return NotFound();
+			}
+			return data;
+		}
+
+		[HttpPost]
+		[Route("add-md-failure-pof")]
+		public async Task<ActionResult<MdFailurePOF>> AddMdFailurePOF(MdFailurePOF form)
+		{
+			_context.MdFailurePOF.Add(form);
+			await _context.SaveChangesAsync();
+
+			return CreatedAtAction("GetMdFailurePOF", new { id = form.id }, form);
+		}
+
+		[HttpPut]
+		[Route("edit-md-failure-pof")]
+		public async Task<IActionResult> EditMdFailurePOF(int id, MdFailurePOF form)
+		{
+			if(id != form.id)
+			{
+				return BadRequest();
+			}
+			_context.Entry(form).State = EntityState.Modified;
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!MdFailurePOFExists(id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return NoContent();
+		}
+
+
+		[HttpDelete]
+		[Route("delete-md-failure-pof")]
+		public async Task<IActionResult> DeleteMdFailurePOF(int id)
+		{
+			var data = await _context.MdFailurePOF.FindAsync(id);
+			if (data == null) 
+			{
+				return NotFound();
+			}
+			_context.MdFailurePOF.Remove(data);
+			await _context.SaveChangesAsync();
+			return NoContent();
+		}
+
+		private bool MdFailurePOFExists(int id)
+		{
+			return _context.MdFailurePOF.Any(e => e.id == id);
+		}
+		#endregion
+
+		#region MdFailureCOF
+		[HttpGet]
+		[Route("get-md-failure-cof-list")]
+		public async Task<ActionResult<IEnumerable<MdFailureCOF>>> GetMdFailureCOFList()
+		{
+			return await _context.MdFailureCOF.ToListAsync();
+		}
+
+		[HttpGet]
+		[Route("get-md-failure-cof-by-id")]
+		public async Task<ActionResult<MdFailureCOF>> GetMdFailureCOF(int id)
+		{
+			var data = await _context.MdFailureCOF.FindAsync(id);
+
+			if(data == null)
+			{
+				return NotFound();
+			}
+			return data;
+		}
+
+		[HttpPost]
+		[Route("add-md-failure-cof")]
+		public async Task<ActionResult<MdFailureCOF>> AddMdFailureCOF(MdFailureCOF form)
+		{
+			_context.MdFailureCOF.Add(form);
+			await _context.SaveChangesAsync();
+
+			return CreatedAtAction("GetMdFailureCOF", new { id = form.id }, form);
+		}
+
+		[HttpPut]
+		[Route("edit-md-failure-cof")]
+		public async Task<IActionResult> EditMdFailureCOF(int id, MdFailureCOF form)
+		{
+			if(id != form.id)
+			{
+				return BadRequest();
+			}
+			_context.Entry(form).State = EntityState.Modified;
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!MdFailureCOFExists(id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return NoContent();
+		}
+
+
+		[HttpDelete]
+		[Route("delete-md-failure-cof")]
+		public async Task<IActionResult> DeleteMdFailureCOF(int id)
+		{
+			var data = await _context.MdFailureCOF.FindAsync(id);
+			if (data == null) 
+			{
+				return NotFound();
+			}
+			_context.MdFailureCOF.Remove(data);
+			await _context.SaveChangesAsync();
+			return NoContent();
+		}
+
+		private bool MdFailureCOFExists(int id)
+		{
+			return _context.MdFailureCOF.Any(e => e.id == id);
+		}
+		#endregion
+		
+		#region MdFailureRiskMatrix
+		[HttpGet]
+		[Route("get-md-failure-risk-matrix-list")]
+		public async Task<ActionResult<IEnumerable<MdFailureRiskMatrix>>> GetMdFailureRiskMatrixList()
+		{
+			return await _context.MdFailureRiskMatrix.ToListAsync();
+		}
+
+		[HttpGet]
+		[Route("get-md-failure-risk-matrix-by-id")]
+		public async Task<ActionResult<MdFailureRiskMatrix>> GetMdFailureRiskMatrix(int id)
+		{
+			var data = await _context.MdFailureRiskMatrix.FindAsync(id);
+
+			if(data == null)
+			{
+				return NotFound();
+			}
+			return data;
+		}
+		
+		[HttpGet]
+		[Route("get-md-failure-risk-matrix-by-pof-cof")]
+		public async Task<ActionResult<MdFailureRiskMatrix>> GetMdFailureRiskMatrixByPofCof(int id_pof, int id_cof)
+		{
+			var data = await _context.MdFailureRiskMatrix.FirstOrDefaultAsync(a => a.id_pof == id_pof && a.id_cof == id_cof);
+
+			if(data == null)
+			{
+				return NotFound();
+			}
+			return data;
+		}
+
+		[HttpPost]
+		[Route("add-md-failure-risk-matrix")]
+		public async Task<ActionResult<MdFailureRiskMatrix>> AddMdFailureRiskMatrix(MdFailureRiskMatrix form)
+		{
+			_context.MdFailureRiskMatrix.Add(form);
+			await _context.SaveChangesAsync();
+
+			return CreatedAtAction("GetMdFailureRiskMatrix", new { id = form.id }, form);
+		}
+
+		[HttpPut]
+		[Route("edit-md-failure-risk-matrix")]
+		public async Task<IActionResult> EditMdFailureRiskMatrix(int id, MdFailureRiskMatrix form)
+		{
+			if(id != form.id)
+			{
+				return BadRequest();
+			}
+			_context.Entry(form).State = EntityState.Modified;
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!MdFailureRiskMatrixExists(id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return NoContent();
+		}
+
+
+		[HttpDelete]
+		[Route("delete-md-failure-risk-matrix")]
+		public async Task<IActionResult> DeleteMdFailureRiskMatrix(int id)
+		{
+			var data = await _context.MdFailureRiskMatrix.FindAsync(id);
+			if (data == null) 
+			{
+				return NotFound();
+			}
+			_context.MdFailureRiskMatrix.Remove(data);
+			await _context.SaveChangesAsync();
+			return NoContent();
+		}
+
+		private bool MdFailureRiskMatrixExists(int id)
+		{
+			return _context.MdFailureRiskMatrix.Any(e => e.id == id);
+		}
+		#endregion
+
+		#region MdMonth
+		[HttpGet]
+		[Route("get-md-month-list")]
+		public async Task<ActionResult<IEnumerable<MdMonth>>> GetMdMonth()
+		{
+			return await _context.MdMonth.ToListAsync();
+		}
+
+		#endregion
+
+		#region MdCMWaterAnalysisStatus
+		[HttpGet]
+		[Route("get-md-cm-water-analysis-status-list")]
+		public async Task<ActionResult<IEnumerable<MdCMWaterAnalysisStatus>>> GetMdCMWaterAnalysisStatusList()
+		{
+			return await _context.MdCMWaterAnalysisStatus.ToListAsync();
+		}
+
+		[HttpGet]
+		[Route("get-md-cm-water-analysis-status-by-id")]
+		public async Task<ActionResult<MdCMWaterAnalysisStatus>> GetMdCMWaterAnalysisStatus(int id)
+		{
+			var data = await _context.MdCMWaterAnalysisStatus.FindAsync(id);
+
+			if(data == null)
+			{
+				return NotFound();
+			}
+			return data;
+		}
+
+		[HttpPost]
+		[Route("add-md-cm-water-analysis-status")]
+		public async Task<ActionResult<MdCMWaterAnalysisStatus>> AddMdCMWaterAnalysisStatus(MdCMWaterAnalysisStatus form)
+		{
+			_context.MdCMWaterAnalysisStatus.Add(form);
+			await _context.SaveChangesAsync();
+
+			return CreatedAtAction("GetMdCMWaterAnalysisStatus", new { id = form.id }, form);
+		}
+
+		[HttpPut]
+		[Route("edit-md-cm-water-analysis-status")]
+		public async Task<IActionResult> EditMdCMWaterAnalysisStatus(int id, MdCMWaterAnalysisStatus form)
+		{
+			if(id != form.id)
+			{
+				return BadRequest();
+			}
+			_context.Entry(form).State = EntityState.Modified;
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!MdCMWaterAnalysisStatusExists(id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return NoContent();
+		}
+
+
+		[HttpDelete]
+		[Route("delete-md-cm-water-analysis-status")]
+		public async Task<IActionResult> DeleteMdCMWaterAnalysisStatus(int id)
+		{
+			var data = await _context.MdCMWaterAnalysisStatus.FindAsync(id);
+			if (data == null) 
+			{
+				return NotFound();
+			}
+			_context.MdCMWaterAnalysisStatus.Remove(data);
+			await _context.SaveChangesAsync();
+			return NoContent();
+		}
+
+		private bool MdCMWaterAnalysisStatusExists(int id)
+		{
+			return _context.MdCMWaterAnalysisStatus.Any(e => e.id == id);
+		}
+		#endregion
+		
+		#region MdGpiRecordStatus
+
+		[HttpGet]
+		[Route("get-md-gpi-record-status-list")]
+		public async Task<ActionResult<IEnumerable<MdGpiRecordStatus>>> GetMdGpiRecordStatus()
+		{
+			return await _context.MdGpiRecordStatus.ToListAsync();
+		}
+
+		[HttpGet]
+		[Route("get-md-gpi-record-status-by-id")]
+		public async Task<ActionResult<MdGpiRecordStatus>> GeMdGpiRecordStatus(int id)
+		{
+			var data = await _context.MdGpiRecordStatus.FindAsync(id);
+
+			if (data == null)
+			{
+				return NotFound();
+			}
+			return data;
+		}
+
+		[HttpPost]
+		[Route("add-md-gpi-record-status")]
+		public async Task<ActionResult<MdGpiRecordStatus>> AddMdGpiRecordStatus(MdGpiRecordStatus form)
+		{
+			_context.MdGpiRecordStatus.Add(form);
+			await _context.SaveChangesAsync();
+
+			return CreatedAtAction("GetMdGpiRecordStatus", new { id = form.id }, form);
+		}
+
+		[HttpPut]
+		[Route("edit-md-gpi-record-status")]
+		public async Task<IActionResult> EditMdGpiRecordStatus(int id, MdGpiRecordStatus form)
+		{
+			if (id != form.id)
+			{
+				return BadRequest();
+			}
+			_context.Entry(form).State = EntityState.Modified;
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!MdGpiRecordStatusExists(id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return NoContent();
+		}
+
+		[HttpDelete]
+		[Route("delete-md-gpi-record-status")]
+		public async Task<IActionResult> DeleteMdGpiRecordStatus(int id)
+		{
+			var data = await _context.MdGpiRecordStatus.FindAsync(id);
+			if (data == null)
+			{
+				return NotFound();
+			}
+			_context.MdGpiRecordStatus.Remove(data);
+			await _context.SaveChangesAsync();
+			return NoContent();
+		}
+
+		private bool MdGpiRecordStatusExists(int id)
+		{
+			return _context.MdGpiRecordStatus.Any(e => e.id == id);
+		}
+
+		#endregion
+
+		#region MdFailureAuthRole
+		[HttpGet]
+		[Route("get-md-failure-auth-role-list")]
+		public async Task<ActionResult<IEnumerable<MdFailureAuthRole>>> GetMdFailureAuthRoleList()
+		{
+			return await _context.MdFailureAuthRole.ToListAsync();
+		}
+
+		[HttpGet]
+		[Route("get-md-failure-auth-role-by-id")]
+		public async Task<ActionResult<MdFailureAuthRole>> GetMdFailureAuthRole(int id)
+		{
+			var data = await _context.MdFailureAuthRole.FindAsync(id);
+
+			if(data == null)
+			{
+				return NotFound();
+			}
+			return data;
+		}
+
+		[HttpPost]
+		[Route("add-md-failure-auth-role")]
+		public async Task<ActionResult<MdFailureAuthRole>> AddMdFailureAuthRole(MdFailureAuthRole form)
+		{
+			_context.MdFailureAuthRole.Add(form);
+			await _context.SaveChangesAsync();
+
+			return CreatedAtAction("GetMdFailureAuthRole", new { id = form.id }, form);
+		}
+
+		[HttpPut]
+		[Route("edit-md-failure-auth-role")]
+		public async Task<IActionResult> EditMdFailureAuthRole(int id, MdFailureAuthRole form)
+		{
+			if(id != form.id)
+			{
+				return BadRequest();
+			}
+			_context.Entry(form).State = EntityState.Modified;
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!MdFailureAuthRoleExists(id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return NoContent();
+		}
+
+		[HttpDelete]
+		[Route("delete-md-failure-auth-role")]
+		public async Task<IActionResult> DeleteMdFailureAuthRole(int id)
+		{
+			var data = await _context.MdFailureAuthRole.FindAsync(id);
+			if (data == null) 
+			{
+				return NotFound();
+			}
+			_context.MdFailureAuthRole.Remove(data);
+			await _context.SaveChangesAsync();
+			return NoContent();
+		}
+
+		private bool MdFailureAuthRoleExists(int id)
+		{
+			return _context.MdFailureAuthRole.Any(e => e.id == id);
+		}
+		#endregion
 	}
 }

@@ -79,7 +79,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 					string ext = Path.GetExtension(form.file_1.FileName);
 					string file_name = Path.GetFileNameWithoutExtension(form.file_1.FileName);
 					path_1 = "wwwroot/attach/expic/" + file_name + "_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ext;
-					form.pic_path_1 = path_1;
+					data.pic_path_1 = path_1;
 					using (var steam = new FileStream(path_1, FileMode.Create))
 					{
 						await form.file_1.CopyToAsync(steam);
@@ -99,7 +99,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 					string ext = Path.GetExtension(form.file_2.FileName);
 					string file_name = Path.GetFileNameWithoutExtension(form.file_2.FileName);
 					path_2 = "wwwroot/attach/expic/" + file_name + "_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ext;
-					form.pic_path_2 = path_2;
+					data.pic_path_2 = path_2;
 					using (var steam = new FileStream(path_2, FileMode.Create))
 					{
 						await form.file_2.CopyToAsync(steam);

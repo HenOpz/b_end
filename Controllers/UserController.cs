@@ -25,13 +25,13 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 
 		[HttpGet]
-        [Route("connection-test")]
-        [Authorize]
-        public JsonResult ConnectionTest()
-        {
-            var response = new { status = 1, status_text = "Back-end server is online", authorization = "authorized" };
-            return new JsonResult(response);
-        }
+		[Route("connection-test")]
+		[Authorize]
+		public JsonResult ConnectionTest()
+		{
+			var response = new { status = 1, status_text = "Back-end server is online", authorization = "authorized" };
+			return new JsonResult(response);
+		}
 
 		[HttpGet]
 		[Route("get-active-user-list")]
@@ -128,7 +128,28 @@ namespace CPOC_AIMS_II_Backend.Controllers
 									{
 										id = r.id,
 										code = r.code
-									}).ToListAsync()
+									}).ToListAsync(),
+					failureRecordAuths = await (from fra in _context.FailureRecordAuth
+												where fra.id_user == user.id
+												select new FailureRecordAuth
+												{
+													id = fra.id,
+													id_work_group = fra.id_work_group,
+													authorized_name = fra.authorized_name,
+													seq = fra.seq,
+													id_user = user.id,
+													id_role = fra.id_role,
+												}).ToListAsync(),
+					gpiRecordAuths = await (from gpi in _context.GpiRecordAuth
+											where gpi.id_user == user.id
+											select new GpiRecordAuth
+											{
+												id = gpi.id,
+												id_discipline = gpi.id_discipline,
+												authorized_name = gpi.authorized_name,
+												seq = gpi.seq,
+												id_user = gpi.id_user,
+											}).ToListAsync()
 				};
 				
 				var token = AuthService.CreateToken(resLogin,secret);

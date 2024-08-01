@@ -8,6 +8,7 @@ namespace CPOC_AIMS_II_Backend.Models
 		public int? id_from_module { get; set; }
 		public string? id_reference { get; set; }
 		public string? notification { get; set; }
+		public string? notification_desc { get; set; }
 		public string? wo_order_no { get; set; }
 		public string? notification_type { get; set; }
 		public string? description { get; set; }
@@ -41,7 +42,9 @@ namespace CPOC_AIMS_II_Backend.Models
 		public bool? is_active { get; set; }
 		public DateTime? changed_on { get; set; }
 		public string? user_status { get; set; }
+		public string? notification_user_status { get; set; }
 		public string? system_status { get; set; }
+		public string? notification_system_status { get; set; }
 		public DateTime? notification_date { get; set; }
 		public DateTime? basic_start_date { get; set; }
 		public DateTime? basic_finish_date { get; set; }
@@ -53,6 +56,7 @@ namespace CPOC_AIMS_II_Backend.Models
 		public DateTime? created_date { get; set; }
 		public int? updated_by { get; set; }
 		public DateTime? updated_date { get; set; }
+		public string? err_msg { get; set; }
 
 	}
 }

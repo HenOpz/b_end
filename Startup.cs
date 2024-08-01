@@ -7,13 +7,14 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.FileProviders;
 using Hangfire;
 using CPOC_AIMS_II_Backend.Controllers;
+using CPOC_AIMS_II_Backend.Services;
 
 namespace CPOC_AIMS_II_Backend
 {
 	public class Startup
 	{
 		public IConfigurationRoot configRoot { get; set; }
-		public static string ConnectionString { get; private set; }
+		public static string? ConnectionString { get; private set; }
 		public static string? AimsSapPath { get; private set; }
 		public static string? SapAimsPath { get; private set; }
 		public Startup(IConfiguration configuration, IWebHostEnvironment env)
@@ -28,6 +29,7 @@ namespace CPOC_AIMS_II_Backend
 		}
 
 		public IConfiguration Configuration { get; }
+		public IEmailService EmailService { get; }
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
@@ -38,7 +40,8 @@ namespace CPOC_AIMS_II_Backend
 				c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 			});
 
-
+			// E-mail
+			services.AddTransient<IEmailService, EmailService>();
 
 			//JSON Serializer
 			services.AddControllersWithViews().AddNewtonsoftJson(options =>
@@ -47,7 +50,9 @@ namespace CPOC_AIMS_II_Backend
 				= new DefaultContractResolver());
 
 			// JWT
-			var key = Encoding.ASCII.GetBytes(configRoot["Security:Secret"].ToString());
+			var secret = configRoot["Security:Secret"]?.ToString() ?? throw new InvalidOperationException("Security secret is not configured.");
+			var key = Encoding.ASCII.GetBytes(secret);
+
 			services.AddAuthentication(x =>
 			{
 				x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -68,7 +73,7 @@ namespace CPOC_AIMS_II_Backend
 			});
 
 			services.AddControllers();
-        	services.AddHttpClient();
+			services.AddHttpClient();
 			services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "Document API CPOC AIMS II Dexon", Version = "v1" });
@@ -112,7 +117,7 @@ namespace CPOC_AIMS_II_Backend
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app,IBackgroundJobClient backgroundJob , IWebHostEnvironment env)
+		public void Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJob, IWebHostEnvironment env)
 		{
 			//Enable CORS
 			//app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
@@ -154,10 +159,10 @@ namespace CPOC_AIMS_II_Backend
 			app.UseAuthentication(); // JWT requires this
 
 			app.UseAuthorization();
-			
-			//RecurringJob.AddOrUpdate<SapHeaderController>("jobId_1",(SapHeaderController) => SapHeaderController.GetSapHeaderExport(),Cron.Minutely);
-			//RecurringJob.AddOrUpdate<TestHangFireController>("jobId_1",(TestHangFireController) => TestHangFireController.PostTestHangFire(),Cron.Minutely);
-			//backgroundJob.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
+
+			// RecurringJob.AddOrUpdate<SapHeaderController>("jobId_1",(SapHeaderController) => SapHeaderController.GetSapHeaderExport(),Cron.Minutely);
+			// RecurringJob.AddOrUpdate<TestHangFireController>("jobId_1",(TestHangFireController) => TestHangFireController.PostTestHangFire(),Cron.Minutely);
+			// backgroundJob.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
 
 			app.UseHangfireDashboard();
 
@@ -167,7 +172,8 @@ namespace CPOC_AIMS_II_Backend
 			});
 
 			// Set connect database
-			ConnectionString = configRoot.GetConnectionString("dbstring");
+			ConnectionString = configRoot.GetConnectionString("dbstring")
+				   ?? throw new InvalidOperationException("Database connection string is not configured.");
 		}
 
 	}

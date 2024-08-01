@@ -14,7 +14,6 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		{
 			_context = context;
 		}
-		string sqlDataSource = Startup.ConnectionString;
 
 		[HttpGet]
 		public async Task<IActionResult> GetFailureActionRecord()
@@ -151,8 +150,8 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		{
 			string act_type = "";
 			string report_no = "";
-			var data = _context.FailureRecord.Where(a => a.id == id_failure).FirstOrDefault();
-			var actionData = _context.FailureActionRecord.Where(a => (a.action_type == action_type) && (a.id_failure == id_failure)).OrderByDescending(a => a.fa_number).FirstOrDefault();
+			var data = _context.FailureRecord.Where(a => a.id == id_failure && a.is_active == true).FirstOrDefault();
+			var actionData = _context.FailureActionRecord.Where(a => (a.action_type == action_type) && (a.id_failure == id_failure) && (a.is_active == true)).OrderByDescending(a => a.fa_number).FirstOrDefault();
 
 			if (action_type == "long-term")
 			{
@@ -167,12 +166,12 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			{
 				if (actionData == null || actionData.fa_number == null)
 				{
-					report_no = data.fl_number + "-" + act_type + "01";
+					report_no = data.fl_number + "-F-" + act_type + "01";
 				}
 				else
 				{
 					int tmp_no = Convert.ToInt32(actionData.fa_number.Substring(actionData.fa_number.Length - 2)) + 1;
-					report_no = data.fl_number + "-" + act_type + tmp_no.ToString("D2");
+					report_no = data.fl_number + "-F-" + act_type + tmp_no.ToString("D2");
 				}
 			}
 

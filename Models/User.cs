@@ -25,7 +25,7 @@ namespace CPOC_AIMS_II_Backend.Models
 		public string? last_name { get; set; }
 		public bool is_active { get; set; }
 		public string? img { get; set; }
-        public IFormFile? img_file { get; set; }
+		public IFormFile? img_file { get; set; }
 		public DateTime? login_last_date { get; set; }
 		public string? login_token { get; set; }
 		public DateTime? updated_date { get; set; }
@@ -48,6 +48,8 @@ namespace CPOC_AIMS_II_Backend.Models
 		public string? name { get; set; }
 		public string? uniqueId { get; set; }
 		public required List<MdUserRole> Roles { get; set; }
+		public List<FailureRecordAuth>? failureRecordAuths{ get; set; }
+		public List<GpiRecordAuth>? gpiRecordAuths{ get; set; }
 	}
 
 }

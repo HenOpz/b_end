@@ -18,7 +18,6 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		{
 			_context = context;
 		}
-		string sqlDataSource = Startup.ConnectionString;
 
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<UserInMenu>>> GetUserInMenu()
