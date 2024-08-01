@@ -9,46 +9,46 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  build:
-    name: Build
-    uses: HenOpz/b_end/.github/workflows/build.yaml@main
-    with:
-      dotnet-version: '7.0.x'
+  # build:
+  #   name: Build
+  #   uses: HenOpz/b_end/.github/workflows/build.yaml@main
+  #   with:
+  #     dotnet-version: '7.0.x'
 
-  codeql:
-    name: Scan Code QL
-    needs: [build]
-    uses: HenOpz/b_end/.github/workflows/codeql.yaml@main
+  # codeql:
+  #   name: Scan Code QL
+  #   needs: [build]
+  #   uses: HenOpz/b_end/.github/workflows/codeql.yaml@main
 
-  test:
-    name: Test
-    needs: [build]
-    uses: HenOpz/b_end/.github/workflows/test.yaml@main
-    with:
-      dotnet-version: '7.0.x'
+  # test:
+  #   name: Test
+  #   needs: [build]
+  #   uses: HenOpz/b_end/.github/workflows/test.yaml@main
+  #   with:
+  #     dotnet-version: '7.0.x'
 
-  release:
-    name: Release
-    needs: [test]
-    uses: HenOpz/b_end/.github/workflows/release.yaml@main
-    with:
-      dotnet-version: '7.0.x'
+  # release:
+  #   name: Release
+  #   needs: [test]
+  #   uses: HenOpz/b_end/.github/workflows/release.yaml@main
+  #   with:
+  #     dotnet-version: '7.0.x'
 
   sec:
     name: Sec Check
-    needs: [test]
+    # needs: [test]
     uses: HenOpz/b_end/.github/workflows/security.yaml@main
     secrets:
       GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  push:
-    name: Push
-    needs: [test]
-    uses: HenOpz/b_end/.github/workflows/push.yaml@main
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  # push:
+  #   name: Push
+  #   needs: [test]
+  #   uses: HenOpz/b_end/.github/workflows/push.yaml@main
+  #   secrets:
+  #     DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  #     DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   # deploy:
   #   name: Deploy
