@@ -1,0 +1,68 @@
+on:
+    workflow_call:
+      secrets:
+        DOCKERHUB_USERNAME:
+          required: true
+        DOCKERHUB_TOKEN:
+          required: true
+      inputs:
+        dotnet-version:
+          required: true
+          type: string
+  jobs:
+    push:
+      name: Build, Scan with Trivy, and Push Docker Image
+      runs-on: ubuntu-latest
+  
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+  
+        - uses: HenOpz/b_end/.github/prepare-action@main
+          with:
+            dotnet-version: ${{ inputs.dotnet-version }}
+          
+        - name: Docker Build
+          uses: docker/setup-buildx-action@v3.3.0
+  
+        - name: Buildx version
+          run: docker buildx version
+  
+        - name: Build Docker image
+          run: |
+            docker build -t mydockerimage:latest .
+            docker save mydockerimage:latest -o image.tar
+  
+        - name: Scan Docker image with Trivy
+          id: trivy_scan
+          uses: aquasecurity/trivy-action@0.23.0
+          with:
+            input: image.tar
+            #format: "table"
+            severity: "MEDIUM,HIGH,CRITICAL"
+            # scanners: "vuln"
+            format: 'table'
+            template: '@/contrib/gitlab.tpl'
+            output: 'report.txt'
+  
+        - name: Upload Trivy report as a GitHub artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: trivy-scan-report
+            path: report.txt
+            retention-days: 1
+  
+        - name: Log in to Docker Hub
+          uses: docker/login-action@v3.2.0
+          with:
+            registry: https://index.docker.io/v1/
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+  
+        - name: Load Docker image from tarball
+          run: docker load < ${{ github.workspace }}/image.tar
+  
+        - name: Tag Docker image
+          run: |
+            docker tag mydockerimage:latest ${{ secrets.DOCKERHUB_USERNAME }}/bend:latest
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/bend:latest
