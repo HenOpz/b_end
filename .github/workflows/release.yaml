@@ -1,0 +1,29 @@
+name: "Release Node App"
+
+on:
+  workflow_call:
+    inputs:
+      dotnet-version:
+        required: true
+        type: string
+
+jobs:
+  release:
+    name: release Workflow
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: HenOpz/b_end/.github/prepare-action@main
+        with:
+          dotnet-version: ${{ inputs.dotnet-version }}
+
+      - name: Publish
+        run: dotnet publish --no-build --configuration Release --output ./publish
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-app
+          path: ./publish

@@ -1,0 +1,21 @@
+name: "Workflow for Test"
+on:
+  workflow_call:
+    inputs:
+      dotnet-version:
+        required: true
+        type: string
+jobs:
+  build:
+    name: Testing Workflow
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout App
+        uses: actions/checkout@v4
+
+      - uses: HenOpz/b_end/.github/prepare-action@main
+        with:
+          dotnet-version: ${{ inputs.dotnet-version }}
+
+      - name: Run Tests
+        run: dotnet test --no-build --verbosity normal

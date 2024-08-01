@@ -1,0 +1,31 @@
+name: SonarQube Security Scan
+
+on:
+  workflow_call:
+jobs:
+  security:
+    name: Github quality Check
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+  
+    - name: Set up CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: csharp
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        output: results.sarif
+        category: 'security'  # Optional: you can categorize the results for better reporting
+
+    - name: Upload CodeQL Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: codeql-results
+        path: results.sarif
