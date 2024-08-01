@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/CPOC-AIMS-II-Backend.csproj": {}
+    "/Users/dextxxxx/Desktop/b_end/b_end/CPOC-AIMS-II-Backend.csproj": {}
   },
   "projects": {
-    "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/CPOC-AIMS-II-Backend.csproj": {
+    "/Users/dextxxxx/Desktop/b_end/b_end/CPOC-AIMS-II-Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/CPOC-AIMS-II-Backend.csproj",
+        "projectUniqueName": "/Users/dextxxxx/Desktop/b_end/b_end/CPOC-AIMS-II-Backend.csproj",
         "projectName": "CPOC-AIMS-II-Backend",
-        "projectPath": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/CPOC-AIMS-II-Backend.csproj",
+        "projectPath": "/Users/dextxxxx/Desktop/b_end/b_end/CPOC-AIMS-II-Backend.csproj",
         "packagesPath": "/Users/dextxxxx/.nuget/packages/",
-        "outputPath": "/Users/dextxxxx/Desktop/Project/GitHub/CPOC-AIMS-II-Backend-dev/obj/",
+        "outputPath": "/Users/dextxxxx/Desktop/b_end/b_end/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/dextxxxx/.nuget/NuGet/NuGet.Config"
@@ -38,6 +38,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.102.2, )"
+            },
             "CsvHelper": {
               "target": "Package",
               "version": "[32.0.3, )"
@@ -45,6 +49,10 @@
             "HangFire": {
               "target": "Package",
               "version": "[1.8.12, )"
+            },
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.7.0, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
