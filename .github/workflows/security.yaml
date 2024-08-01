@@ -7,7 +7,6 @@ on:
         required: true
       SONAR_TOKEN:
         required: true
-
 jobs:
   build:
     name: Build and analyze
