@@ -37,7 +37,7 @@ jobs:
   sec:
     name: Sec Check
     needs: [test]
-    uses: HenOpz/f_end/.github/workflows/security.yaml@main
+    uses: HenOpz/b_end/.github/workflows/security.yaml@main
     secrets:
       GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
