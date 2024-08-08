@@ -38,7 +38,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		//Submit record
 		[HttpPost]
 		[Route("add-submit-txn")]
-		public async Task<IActionResult> AddSubmitTXN(int id_user, int id_gpi)
+		public async Task<IActionResult> AddSubmitTXN(int id_user, int id_user_info, int id_gpi)
 		{
 			try
 			{
@@ -64,6 +64,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 						{
 							id_gpi = id_gpi,
 							id_user = id_user,
+							id_user_info = id_user_info,
 							id_status = 1,
 							seq = 1,
 							remark = null,
@@ -80,6 +81,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 						{
 							id_gpi = id_gpi,
 							id_user = tmp.id_user,
+							id_user_info = null,
 							id_status = 2,
 							seq = 2,
 							remark = null,
@@ -109,7 +111,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		//Approval record
 		[HttpPost]
 		[Route("add-appr-txn")]
-		public async Task<IActionResult> AddApproveTXN(int id_user, int id_gpi)
+		public async Task<IActionResult> AddApproveTXN(int id_user, int id_user_info, int id_gpi)
 		{
 			try
 			{
@@ -138,6 +140,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 							{
 								id_gpi = id_gpi,
 								id_user = id_user,
+								id_user_info = id_user_info,
 								id_status = 3,
 								seq = auth_user.seq,
 								remark = null,
@@ -149,10 +152,12 @@ namespace CPOC_AIMS_II_Backend.Controllers
 							if (fr.max_auth_seq != auth_user.seq)
 							{
 								var next_user = auth.Where(a => a.seq == auth_user.seq + 1).First();
+								//var next_info = await _context.UserInfo.Where(a => a.id_user == next_user.id_user).FirstAsync();
 								GpiRecordTXN nextTXN = new()
 								{
 									id_gpi = id_gpi,
 									id_user = next_user.id_user,
+									id_user_info = null,
 									id_status = 2,
 									seq = next_user.seq,
 									remark = null,
@@ -187,7 +192,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		//Reject record
 		[HttpPost]
 		[Route("add-reject-txn")]
-		public async Task<IActionResult> AddRejectTXN(int id_user, int id_gpi, string? remark)
+		public async Task<IActionResult> AddRejectTXN(int id_user, int id_user_info, int id_gpi, string? remark)
 		{
 			try
 			{
@@ -216,6 +221,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 							{
 								id_gpi = id_gpi,
 								id_user = id_user,
+								id_user_info = id_user_info,
 								id_status = 4,
 								seq = auth_user.seq,
 								remark = remark,
@@ -227,10 +233,12 @@ namespace CPOC_AIMS_II_Backend.Controllers
 							if (auth_user.seq == 2)
 							{
 								var first_user = await _context.GpiRecordAuth.Where(a => a.id_user == fr.created_by).FirstAsync();
+								//var first_info = await _context.UserInfo.Where(a => a.id_user == first_user.id_user).FirstAsync();
 								GpiRecordTXN nextTXN = new()
 								{
 									id_gpi = id_gpi,
 									id_user = first_user.id_user,
+									id_user_info = null,
 									id_status = 5,
 									seq = first_user.seq,
 									remark = remark,
@@ -242,11 +250,12 @@ namespace CPOC_AIMS_II_Backend.Controllers
 							else
 							{
 								var pre_user = await _context.GpiRecordAuth.Where(a => a.seq == auth_user.seq - 1).FirstAsync();
-
+								//var pre_info = await _context.UserInfo.Where(a => a.id_user == pre_user.id_user).FirstAsync();
 								GpiRecordTXN nextTXN = new()
 								{
 									id_gpi = id_gpi,
 									id_user = pre_user.id_user,
+									id_user_info = null,
 									id_status = 2,
 									seq = pre_user.seq,
 									remark = null,
@@ -255,8 +264,8 @@ namespace CPOC_AIMS_II_Backend.Controllers
 
 								_context.GpiRecordTXN.Add(nextTXN);
 							}
-							
-							
+
+
 							await _context.SaveChangesAsync();
 						}
 						else

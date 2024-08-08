@@ -45,7 +45,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 
 		[HttpGet]
 		[Route("get-sap-header-by-module-from-module")]
-		public async Task<ActionResult<SapHeader>> GetSapHeaderByModule(int id_module, int id_from_module)
+		public async Task<ActionResult<SapHeader>> GetSapHeaderByModuleFromModule(int id_module, int id_from_module)
 		{
 			var data = await _context.SapHeader.Where(a => (a.is_active == true) && (a.id_module == id_module) && (a.id_from_module == id_from_module)).ToListAsync();
 
@@ -53,6 +53,20 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			{
 				return BadRequest("Something Wrong Sapheader has more than 1 record.");
 			}
+
+			if (data.Count == 0)
+			{
+				return NotFound();
+			}
+
+			return Ok(data);
+		}
+
+		[HttpGet]
+		[Route("get-sap-header-by-module")]
+		public async Task<ActionResult<SapHeader>> GetSapHeaderByModule(int id_module)
+		{
+			var data = await _context.SapHeader.Where(a => (a.is_active == true) && (a.id_module == id_module)).ToListAsync();
 
 			if (data.Count == 0)
 			{
@@ -231,13 +245,15 @@ namespace CPOC_AIMS_II_Backend.Controllers
 							//To = new List<string> { "weerawat.suwattanapiset@dexon-technology.com", "aritouch.sumpaothong@dexon-technology.com", "piyanant.sri@hotmail.com" },
 							Subject = "File to import not found in SAP-AIMS folder",
 						};
-
+						// Query from log
 						await _emailService.SendEmailNotFoundAsync(emailModel, paramModel, "SapHeaderNotFound");
 						return StatusCode(404, "File to import not found in SAP-AIMS folder.");
 					}
 					await Task.Delay(TimeSpan.FromMinutes(DelayMinutes));
 					continue;
 				}
+
+				Array.Sort(csvFiles);
 
 				foreach (string filePath in csvFiles)
 				{

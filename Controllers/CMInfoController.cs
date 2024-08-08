@@ -367,6 +367,13 @@ namespace CPOC_AIMS_II_Backend.Controllers
 								  .ThenByDescending(wa => wa.period)
 								  .FirstOrDefault())
 					.ToListAsync();
+				
+				var recentCO2 = await _context.CMWaterAnalysisCO2
+					.GroupBy(wa => wa.id_tag)
+					.Select(g => g.OrderByDescending(wa => wa.year)
+								  .ThenByDescending(wa => wa.period)
+								  .FirstOrDefault())
+					.ToListAsync();
 
 				var cmInfos = await _context.CMInfo
 					.Where(inf => inf.is_active == true && inf.id_system == 4 && inf.is_water_analysis == true)
@@ -381,6 +388,8 @@ namespace CPOC_AIMS_II_Backend.Controllers
 							from infpfResult in infpf.DefaultIfEmpty()
 							join ph in recentPh on inf.id equals ph.id_tag into infph
 							from phResult in infph.DefaultIfEmpty()
+							join co2 in recentCO2 on inf.id equals co2.id_tag into infco2
+							from co2Result in infco2.DefaultIfEmpty()
 							join o2 in recentDissolvedO2 on inf.id equals o2.id_tag into info2
 							from o2Result in info2.DefaultIfEmpty()
 							let o2sttResult = status.FirstOrDefault(s => s.id == o2Result?.id_status)
@@ -396,6 +405,8 @@ namespace CPOC_AIMS_II_Backend.Controllers
 								desc = inf.desc,
 								ph_lastest_period = phResult != null ? $"{phResult.period}/{phResult.year}" : null,
 								ph_value = phResult?.ph_val,
+								co2_lastest_period = co2Result != null ? $"{co2Result.period}/{co2Result.year}" : null,
+								co2_value = co2Result?.co2_val,
 								o2_lastest_period = o2Result != null ? $"{o2Result.period}/{o2Result.year}" : null,
 								o2_value = o2Result?.dissolved_o2_val,
 								id_status_o2 = o2Result?.id_status,

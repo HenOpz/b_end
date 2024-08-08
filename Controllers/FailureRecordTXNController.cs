@@ -29,7 +29,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		[Route("get-last-failure-record-txn-by-id-failure")]
 		public async Task<dynamic> GetLastFailureRecordTXNByIdFailure(int id_failure)
 		{
-			var data = await _context.FailureRecordTXN.Where(a => a.id_failure == id_failure).OrderByDescending(a => a.txn_datetime).FirstOrDefaultAsync();
+			var data = await _context.FailureRecordTXN.Where(a => a.id_failure == id_failure).OrderByDescending(a => a.id).FirstOrDefaultAsync();
 			if(data == null) return NotFound("FailureRecordTXN was not found.");
 			
 			return data;
@@ -38,7 +38,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		//Submit record
 		[HttpPost]
 		[Route("add-submit-txn")]
-		public async Task<IActionResult> AddSubmitTXN(int id_user, int id_failure)
+		public async Task<IActionResult> AddSubmitTXN(int id_user, int id_user_info, int id_failure)
 		{
 			try
 			{
@@ -64,6 +64,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 						{
 							id_failure = id_failure,
 							id_user = id_user,
+							id_user_info = id_user_info,
 							id_status = 1,
 							seq = 1,
 							remark = null,
@@ -80,6 +81,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 						{
 							id_failure = id_failure,
 							id_user = tmp.id_user,
+							id_user_info = null,
 							id_status = 2,
 							seq = 2,
 							remark = null,
@@ -108,7 +110,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		//Approval record
 		[HttpPost]
 		[Route("add-appr-txn")]
-		public async Task<IActionResult> AddApproveTXN(int id_user, int id_failure)
+		public async Task<IActionResult> AddApproveTXN(int id_user, int id_user_info, int id_failure)
 		{
 			try
 			{
@@ -127,7 +129,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 					}
 					var auth_user = auth.Where(a => a.id_user == id_user).First();
 
-					var lastTXN = await _context.FailureRecordTXN.Where(a => a.id_failure == id_failure).OrderByDescending(a => a.seq).ToListAsync();
+					var lastTXN = await _context.FailureRecordTXN.Where(a => a.id_failure == id_failure).OrderByDescending(a => a.id).ToListAsync();
 
 					if (lastTXN.Any())
 					{
@@ -137,6 +139,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 							{
 								id_failure = id_failure,
 								id_user = id_user,
+								id_user_info = id_user_info,
 								id_status = 3,
 								seq = auth_user.seq,
 								remark = null,
@@ -148,10 +151,12 @@ namespace CPOC_AIMS_II_Backend.Controllers
 							if (fr.max_auth_seq != auth_user.seq)
 							{
 								var next_user = auth.Where(a => a.seq == auth_user.seq + 1).First();
+								//var next_info = await _context.UserInfo.Where(a => a.id_user == next_user.id_user).FirstAsync();
 								FailureRecordTXN nextTXN = new()
 								{
 									id_failure = id_failure,
 									id_user = next_user.id_user,
+									id_user_info = null,
 									id_status = 2,
 									seq = next_user.seq,
 									remark = null,
@@ -160,6 +165,8 @@ namespace CPOC_AIMS_II_Backend.Controllers
 								
 								_context.FailureRecordTXN.Add(nextTXN);
 							}
+
+							await _context.SaveChangesAsync();
 							
 						}
 						else
@@ -185,7 +192,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		//Reject record
 		[HttpPost]
 		[Route("add-reject-txn")]
-		public async Task<IActionResult> AddRejectTXN(int id_user, int id_failure, string? remark)
+		public async Task<IActionResult> AddRejectTXN(int id_user, int id_user_info, int id_failure, string? remark)
 		{
 			try
 			{
@@ -214,6 +221,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 							{
 								id_failure = id_failure,
 								id_user = id_user,
+								id_user_info = id_user_info,
 								id_status = 4,
 								seq = auth_user.seq,
 								remark = remark,
@@ -224,11 +232,13 @@ namespace CPOC_AIMS_II_Backend.Controllers
 
 							if (auth_user.seq == 2)
 							{
-								var first_user = auth.Where(a => a.seq == 1).First();
+								var first_user = await _context.FailureRecordAuth.Where(a => a.id_user == fr.created_by).FirstAsync();
+								//var first_info = await _context.UserInfo.Where(a => a.id_user == first_user.id_user).FirstAsync();
 								FailureRecordTXN nextTXN = new()
 								{
 									id_failure = id_failure,
 									id_user = first_user.id_user,
+									id_user_info = null,
 									id_status = 5,
 									seq = first_user.seq,
 									remark = remark,
@@ -240,11 +250,12 @@ namespace CPOC_AIMS_II_Backend.Controllers
 							else
 							{
 								var pre_user = auth.Where(a => a.seq == auth_user.seq - 1).First();
-								
+								//var pre_info = await _context.UserInfo.Where(a => a.id_user == pre_user.id_user).FirstAsync();
 								FailureRecordTXN nextTXN = new()
 								{
 									id_failure = id_failure,
 									id_user = pre_user.id_user,
+									id_user_info = null,
 									id_status = 2,
 									seq = pre_user.seq,
 									remark = null,
@@ -253,6 +264,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 								
 								_context.FailureRecordTXN.Add(nextTXN);
 							}
+							await _context.SaveChangesAsync();
 						}
 						else
 						{

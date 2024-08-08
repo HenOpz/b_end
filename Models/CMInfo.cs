@@ -117,6 +117,8 @@ namespace CPOC_AIMS_II_Backend.Models
 		public string? desc { get; set; }
 		public string? ph_lastest_period { get; set; }
 		public decimal? ph_value { get; set; }
+		public string? co2_lastest_period { get; set; }
+		public decimal? co2_value { get; set; }
 		public string? o2_lastest_period { get; set; }
 		public decimal? o2_value { get; set; }
 		public int? id_status_o2 { get; set; }

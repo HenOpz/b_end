@@ -35,12 +35,6 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			return data;
 		}
 		
-		[HttpGet("ByTag/{id_tag}")]
-		public async Task<ActionResult<IEnumerable<CMWaterAnalysisLibrary>>> GetCMWaterAnalysisLibraryByTag(int id_tag)
-		{
-			return await _context.CMWaterAnalysisLibrary.Where(b => b.id_tag == id_tag).ToListAsync();
-		}
-
 		[HttpPut("{id}")]
 		public async Task<IActionResult> PutCMWaterAnalysisLibrary(int id, [FromForm] CMWaterAnalysisLibraryFileUpload form)
 		{
@@ -80,7 +74,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 				data.file_path = path;
 				data.file_type = file_ext;
 			}
-			data.id_tag = form.id_tag;
+			data.id_system = form.id_system;
 			data.note = form.note;
 			data.updated_by = form.updated_by;
 			data.updated_date = DateTime.Now;
@@ -133,7 +127,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 				data.file_path = path;
 				data.file_type = file_ext;
 			}
-			data.id_tag = form.id_tag;
+			data.id_system = form.id_system;
 			data.note = form.note;
 			data.created_by = form.created_by;
 			data.created_date = DateTime.Now;

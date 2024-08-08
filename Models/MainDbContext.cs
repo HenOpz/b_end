@@ -16,6 +16,8 @@ namespace CPOC_AIMS_II_Backend.Models
 		public DbSet<RCFAActionRecord> RCFAActionRecord { get; set; }
 		public DbSet<CMInfo> CMInfo { get; set; }
 		public DbSet<CMWaterAnalysisPH> CMWaterAnalysisPH { get; set; }
+		public DbSet<CMWaterAnalysisCO2> CMWaterAnalysisCO2 { get; set; }
+		public DbSet<CMWaterAnalysisHydroDynamic> CMWaterAnalysisHydroDynamic { get; set; }
 		public DbSet<CMWaterAnalysisDissolvedO2> CMWaterAnalysisDissolvedO2 { get; set; }
 		public DbSet<CMWaterAnalysisIonCount> CMWaterAnalysisIonCount { get; set; }
 		public DbSet<CMWaterAnalysisLibrary> CMWaterAnalysisLibrary { get; set; }
@@ -25,6 +27,7 @@ namespace CPOC_AIMS_II_Backend.Models
 		public DbSet<CMCorrosionCouponPictureLog> CMCorrosionCouponPictureLog { get; set; }
 		public DbSet<CMERProbeRecord> CMERProbeRecord { get; set; }
 		public DbSet<CMERProbeLibrary> CMERProbeLibrary { get; set; }
+		public DbSet<CMTagRegistrationLibrary> CMTagRegistrationLibrary { get; set; }
 		public DbSet<CMChemInjectionRecord> CMChemInjectionRecord { get; set; }
 		public DbSet<CMChemInjectionLibrary> CMChemInjectionLibrary { get; set; }
 		public DbSet<CMMicroBacteriaATP> CMMicroBacteriaATP { get; set; }
@@ -56,7 +59,6 @@ namespace CPOC_AIMS_II_Backend.Models
 		public DbSet<CMWOManagement> CMWOManagement { get; set; }
 		public DbSet<UserInRole> UserInRole { get; set; }
 		public DbSet<User> User { get; set; }
-		public DbSet<UserAccount> UserAccount { get; set; }
 		public DbSet<UserInfo> UserInfo { get; set; }
 		public DbSet<UserInMenu> UserInMenu { get; set; }
 		public DbSet<SapHeader> SapHeader { get; set; }
@@ -85,6 +87,7 @@ namespace CPOC_AIMS_II_Backend.Models
 		public DbSet<MdTransactionStatus> MdTransactionStatus { get; set; }
 		public DbSet<MdModules> MdModules { get; set; }
 		public DbSet<MdSapAccessibility> MdSapAccessibility { get; set; }
+		public DbSet<MdUserCompany> MdUserCompany { get; set; }
 		public DbSet<MdSapCauseCode> MdSapCauseCode { get; set; }
 		public DbSet<MdSapCodeGrpCause> MdSapCodeGrpCause { get; set; }
 		public DbSet<MdSapCodeGrpDamage> MdSapCodeGrpDamage { get; set; }
@@ -138,6 +141,8 @@ namespace CPOC_AIMS_II_Backend.Models
 		public DbSet<MdCMWaterAnalysisStatus> MdCMWaterAnalysisStatus { get; set; }
 		public DbSet<MdGpiRecordStatus> MdGpiRecordStatus { get; set; }
 		public DbSet<MdFailureAuthRole> MdFailureAuthRole { get; set; }
+		public DbSet<MdCMProbeStatus> MdCMProbeStatus { get; set; }
+
 
 
 		#endregion
@@ -283,6 +288,12 @@ namespace CPOC_AIMS_II_Backend.Models
 		public string? code { get; set; }
 		public string? description { get; set; }
 		public int? sort { get; set; }
+	}
+	public class MdUserCompany
+	{
+		public int id { get; set; }
+		public string? company_name { get; set; }
+		public bool? is_active { get; set; }
 	}
 	public class MdSapCauseCode
 	{
@@ -641,5 +652,13 @@ namespace CPOC_AIMS_II_Backend.Models
 		public int id_work_group { get; set; }
 		public string? role_name { get; set; }
 	}
+	public class MdCMProbeStatus
+	{
+		public int id { get; set; }
+		public string? status { get; set; }
+		public string? color_code { get; set; }
+		public int? sort { get; set; }
+	}
 	#endregion
+
 }

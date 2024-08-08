@@ -41,7 +41,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		[Route("get-latest-cm-rci-records")]
 		public async Task<ActionResult<List<object>>> GetLatestCMRCIRecords()
 		{
-			var inf = await _context.CMInfo.Where(a => a.is_active == true).ToListAsync();
+			var inf = await _context.CMInfo.Where(a => a.is_active == true && a.id_system == 4).ToListAsync();
 
 			var platforms = await _context.MdPlatform.ToListAsync();
 
@@ -86,7 +86,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		public async Task<ActionResult<List<RCIValueDashboard>>> GetCMRCIRecordsForDashboard(int year_no)
 		{
 			var activeCMInfos = await _context.CMInfo
-				.Where(a => a.is_active.HasValue && a.is_active.Value)
+				.Where(a => a.is_active.HasValue && a.is_active.Value && a.id_system == 4)
 				.Select(a => new { a.id, a.tag_no })
 				.ToListAsync();
 

@@ -1,6 +1,6 @@
 namespace CPOC_AIMS_II_Backend.Models
 {
-	public class CMWaterAnalysisLibrary
+	public class CMTagRegistrationLibrary
 	{
 		public int id { get; set; }
 		public int? id_system { get; set; }
@@ -14,7 +14,7 @@ namespace CPOC_AIMS_II_Backend.Models
 		public DateTime? updated_date { get; set; }
 
 	}
-	public class CMWaterAnalysisLibraryFileUpload
+	public class CMTagRegistrationLibraryFileUpload
 	{
 		public int id { get; set; }
 		public int? id_system { get; set; }

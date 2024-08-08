@@ -1745,6 +1745,84 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			return _context.MdSapAccessibility.Any(e => e.id == id);
 		}
 		#endregion
+
+		#region MdUserCompany
+		[HttpGet]
+		[Route("get-md-user-company-list")]
+		public async Task<ActionResult<IEnumerable<MdUserCompany>>> GetMdUserCompanyList()
+		{
+			return await _context.MdUserCompany.ToListAsync();
+		}
+
+		[HttpGet]
+		[Route("get-md-user-company-by-id")]
+		public async Task<ActionResult<MdUserCompany>> GetMdUserCompany(int id)
+		{
+			var data = await _context.MdUserCompany.FindAsync(id);
+
+			if(data == null)
+			{
+				return NotFound();
+			}
+			return data;
+		}
+
+		[HttpPost]
+		[Route("add-md-user-company")]
+		public async Task<ActionResult<MdUserCompany>> AddMdUserCompany(MdUserCompany form)
+		{
+			_context.MdUserCompany.Add(form);
+			await _context.SaveChangesAsync();
+
+			return CreatedAtAction("GetMdUserCompany", new { id = form.id }, form);
+		}
+
+		[HttpPut]
+		[Route("edit-md-user-company")]
+		public async Task<IActionResult> EditMdUserCompany(int id, MdUserCompany form)
+		{
+			if(id != form.id)
+			{
+				return BadRequest();
+			}
+			_context.Entry(form).State = EntityState.Modified;
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!MdUserCompanyExists(id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return NoContent();
+		}
+
+		[HttpDelete]
+		[Route("delete-md-user-company")]
+		public async Task<IActionResult> DeleteMdUserCompany(int id)
+		{
+			var data = await _context.MdUserCompany.FindAsync(id);
+			if (data == null) 
+			{
+				return NotFound();
+			}
+			_context.MdUserCompany.Remove(data);
+			await _context.SaveChangesAsync();
+			return NoContent();
+		}
+
+		private bool MdUserCompanyExists(int id)
+		{
+			return _context.MdUserCompany.Any(e => e.id == id);
+		}
+		#endregion
 	
 		#region MdSapCauseCode
 		[HttpGet]
@@ -5527,5 +5605,26 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			return _context.MdFailureAuthRole.Any(e => e.id == id);
 		}
 		#endregion
+
+		#region MdGpiRecordStatus
+
+		[HttpGet]
+		[Route("get-md-cm-probe-status-list")]
+		public async Task<ActionResult<IEnumerable<MdCMProbeStatus>>> GetMdCMProbeStatus()
+		{
+			return await _context.MdCMProbeStatus.ToListAsync();
+		}
+		#endregion
+
+		#region MdGpiApprovalStatus
+
+		[HttpGet]
+		[Route("get-md-gpi-approval-status-list")]
+		public async Task<ActionResult<IEnumerable<MdGpiApprovalStatus>>> GetMdGpiApprovalStatus()
+		{
+			return await _context.MdGpiApprovalStatus.ToListAsync();
+		}
+		#endregion
+		
 	}
 }

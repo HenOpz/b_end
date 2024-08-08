@@ -22,9 +22,9 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		{
 			return await _context.FailureRecord.Where(a => a.is_active == true).ToListAsync();
 		}
-		
+
 		[HttpGet("{id}")]
-		public async Task<ActionResult<FailureRecord>> GetFailureRecord(int id)
+		public async Task<ActionResult<dynamic>> GetFailureRecord(int id)
 		{
 			var data = await _context.FailureRecord.Where(a => (a.is_active == true) && (a.id == id)).FirstOrDefaultAsync();
 
@@ -33,30 +33,75 @@ namespace CPOC_AIMS_II_Backend.Controllers
 				return NotFound();
 			}
 
-			return data;
+			var txn = await _context.FailureRecordTXN.OrderBy(a => a.id).Where(a => a.id_failure == data.id).ToListAsync();
+
+			int seq = 1;
+			var app_data = new List<FailureRecordApprovalSeq>();
+			var userInf = await _context.UserInfo.ToListAsync();
+			var comp = await _context.MdUserCompany.ToListAsync();
+			foreach (var row in txn)
+			{
+				if (row.seq == seq)
+				{
+					if (row.id_status == 1 || row.id_status == 3)
+					{
+						var uif = userInf.Where(a => a.id == row.id_user_info).FirstOrDefault();
+						var cmp = uif != null ? comp.FirstOrDefault(a => a.id == uif.id_company) : null;
+						var sub = new FailureRecordApprovalSeq
+						{
+							id_user = row.id_user,
+							id_user_info = row.id_user_info,
+							seq = row.seq,
+							id_status = row.id_status,
+							txn_datetime = row.txn_datetime,
+							name = uif != null ? uif.name : null,
+							position = uif != null ? uif.position : null,
+							signature = uif != null ? uif.signature : null,
+							company = cmp != null ? cmp.company_name : null,
+						};
+						app_data.Add(sub);
+						seq = seq + 1;
+					}
+					if (row.id_status == 4)
+					{
+						if (app_data.Count == 1)
+						{
+							app_data.Clear();
+							seq = 1;
+						}
+						else
+						{
+							app_data.RemoveAt(app_data.Count - 1);
+							seq = seq - 1;
+						}
+					}
+				}
+			}
+
+			return new { data, app_data };
 		}
 
 		[HttpGet]
 		[Route("get-failure-record-by-draft")]
 		public async Task<ActionResult<dynamic>> GetFailureRecordDraftByIdUser(int id_user)
 		{
-			var lastTXN =  await _context.FailureRecordTXN
+			var lastTXN = await _context.FailureRecordTXN
 							.GroupBy(txn => txn.id_failure)
 							.Select(f => f.OrderByDescending(txn => txn.id).FirstOrDefault())
 							.ToListAsync();
-							
+
 			var failureList = await _context.FailureRecord.Where(a => a.is_active == true).ToListAsync();
-			
+
 			var result = (from rc in failureList
-							join txn in lastTXN on rc.id equals txn.id_failure
-							where rc.created_by == id_user && txn.id_status == 5
-							select new
-							
-							{
-								FailureRecord = rc,
-								IdStatus = txn.id_status
-							}).ToList();
-							
+						  join txn in lastTXN on rc.id equals txn.id_failure
+						  where rc.created_by == id_user && txn.id_status == 5
+						  select new
+
+						  {
+							  FailureRecord = rc,
+							  IdStatus = txn.id_status
+						  }).ToList();
+
 			if (!result.Any())
 			{
 				return NotFound();
@@ -73,7 +118,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 				.GroupBy(txn => txn.id_failure)
 				.Select(g => g.OrderByDescending(txn => txn.id).FirstOrDefault())
 				.ToListAsync();
-				
+
 			var failureList = await _context.FailureRecord.Where(a => a.is_active == true).ToListAsync();
 
 			var result = (from rc in failureList
@@ -111,23 +156,23 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		[Route("get-failure-record-by-draft-is-rcfa")]
 		public async Task<ActionResult<dynamic>> GetFailureRecordDraftByIdUserIsRCFA(int id_user)
 		{
-			var lastTXN =  await _context.FailureRecordTXN
+			var lastTXN = await _context.FailureRecordTXN
 							.GroupBy(txn => txn.id_failure)
 							.Select(f => f.OrderByDescending(txn => txn.id).FirstOrDefault())
 							.ToListAsync();
-							
+
 			var failureList = await _context.FailureRecord.Where(a => a.is_active == true && a.is_rcfa == true).ToListAsync();
-			
+
 			var result = (from rc in failureList
-							join txn in lastTXN on rc.id equals txn.id_failure
-							where rc.created_by == id_user && txn.id_status == 5
-							select new
-							
-							{
-								FailureRecord = rc,
-								IdStatus = txn.id_status
-							}).ToList();
-							
+						  join txn in lastTXN on rc.id equals txn.id_failure
+						  where rc.created_by == id_user && txn.id_status == 5
+						  select new
+
+						  {
+							  FailureRecord = rc,
+							  IdStatus = txn.id_status
+						  }).ToList();
+
 			if (!result.Any())
 			{
 				return NotFound();
@@ -140,23 +185,23 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		[Route("get-failure-record-by-pending-is-rcfa")]
 		public async Task<ActionResult<dynamic>> GetFailureRecordPendingByIdUserIsRCFA(int id_user)
 		{
-			var lastTXN =  await _context.FailureRecordTXN
+			var lastTXN = await _context.FailureRecordTXN
 							.GroupBy(txn => txn.id_failure)
 							.Select(f => f.OrderByDescending(txn => txn.id).FirstOrDefault())
 							.ToListAsync();
-							
+
 			var failureList = await _context.FailureRecord.Where(a => a.is_active == true && a.is_rcfa == true).ToListAsync();
-			
+
 			var result = (from rc in failureList
-							join txn in lastTXN on rc.id equals txn.id_failure
-							where rc.created_by == id_user && txn.id_status == 2
-							select new
-							
-							{
-								FailureRecord = rc,
-								IdStatus = txn.id_status
-							}).ToList();
-							
+						  join txn in lastTXN on rc.id equals txn.id_failure
+						  where rc.created_by == id_user && txn.id_status == 2
+						  select new
+
+						  {
+							  FailureRecord = rc,
+							  IdStatus = txn.id_status
+						  }).ToList();
+
 			if (!result.Any())
 			{
 				return NotFound();
@@ -178,7 +223,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 
 		// 	return Ok(data);
 		// }
-		
+
 		[HttpGet]
 		[Route("get-failure-record-list-is-rcfa")]
 		public async Task<ActionResult<List<FailureRecord>>> GetFailureRecordIsRCFA()
@@ -209,17 +254,11 @@ namespace CPOC_AIMS_II_Backend.Controllers
 
 
 		[HttpPut("{id}")]
-		public async Task<IActionResult> PutFailureRecord(int id, int id_role, FailureRecord data)
+		public async Task<IActionResult> PutFailureRecord(int id, FailureRecord data)
 		{
 			if (id != data.id)
 			{
 				return BadRequest("ID mismatch between URL and body.");
-			}
-			
-			var auth = await _context.FailureRecordAuth.Where(a => a.id_role == id_role).ToListAsync();
-			if (auth == null)
-			{
-				return BadRequest("Authentication is invalid");
 			}
 
 			if ((data.id_cof_environment != null || data.id_cof_people != null || data.id_cof_production_loss != null || data.id_cof_reputation != null) && (data.id_pof != null))
@@ -232,7 +271,6 @@ namespace CPOC_AIMS_II_Backend.Controllers
 				}
 			}
 
-			data.max_auth_seq = auth.Count + 1;
 			data.updated_by = data.updated_by;
 			data.updated_date = DateTime.Now;
 
@@ -263,10 +301,12 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			{
 				try
 				{
-					var auth = await _context.FailureRecordAuth.Where(x => x.id_work_group == data.id_work_group).ToListAsync();
-					if (!auth.Any()) { return BadRequest("Authentication is invalid"); }
+					var user = await _context.FailureRecordAuth.FirstOrDefaultAsync(a => a.id_user == data.created_by);
+					if (user == null) { return BadRequest("User is invalid"); }
+					var auth = await _context.FailureRecordAuth.Where(x => x.id_work_group == data.id_work_group && x.id_role == user.id_role).OrderByDescending(a => a.seq).FirstOrDefaultAsync();
+					if (auth == null) { return BadRequest("Authentication is invalid"); }
 
-					data.max_auth_seq = auth.Count + 1;
+					data.max_auth_seq = auth.seq;
 					data.fl_number = GenReportNo((DateTime)data.findings_date);
 					data.created_date = DateTime.Now;
 
@@ -357,7 +397,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 
 			return records;
 		}
-		
+
 		[NonAction]
 		public async Task<IEnumerable<FailureRecord>> GetFailureRecordsByUserAsyncIsRCFA(int userId, int statusId)
 		{

@@ -6,26 +6,26 @@ namespace CPOC_AIMS_II_Backend.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]
-	public class CMERProbeLibraryController : ControllerBase
+	public class CMTagRegistrationLibraryController : ControllerBase
 	{
 		private readonly MainDbContext _context;
-		public CMERProbeLibraryController(MainDbContext context)
+		public CMTagRegistrationLibraryController(MainDbContext context)
 		{
 			_context = context;
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<CMERProbeLibrary>>> GetCMERProbeLibrary()
+		public async Task<ActionResult<IEnumerable<CMTagRegistrationLibrary>>> GetCMTagRegistrationLibrary()
 		{
-			var data = await _context.CMERProbeLibrary.ToListAsync();
+			var data = await _context.CMTagRegistrationLibrary.ToListAsync();
 			if (data.Count == 0) return NotFound();
 			return Ok(data);
 		}
 
 		[HttpGet("{id}")]
-		public async Task<ActionResult<CMERProbeLibrary>> GetCMERProbeLibrary(int id)
+		public async Task<ActionResult<CMTagRegistrationLibrary>> GetCMTagRegistrationLibrary(int id)
 		{
-			var data = await _context.CMERProbeLibrary.Where(a => a.id == id).FirstOrDefaultAsync();
+			var data = await _context.CMTagRegistrationLibrary.Where(a => a.id == id).FirstOrDefaultAsync();
 
 			if (data == null)
 			{
@@ -36,14 +36,14 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 		
 		[HttpPut("{id}")]
-		public async Task<IActionResult> PutCMERProbeLibrary(int id, [FromForm] CMERProbeLibraryFileUpload form)
+		public async Task<IActionResult> PutCMTagRegistrationLibrary(int id, [FromForm] CMTagRegistrationLibraryFileUpload form)
 		{
 			if (id != form.id)
 			{
 				return BadRequest("ID mismatch between URL and body.");
 			}
 
-			CMERProbeLibrary? data = await _context.CMERProbeLibrary.FindAsync(form.id);
+			CMTagRegistrationLibrary? data = await _context.CMTagRegistrationLibrary.FindAsync(form.id);
 
 			if (data == null) return NotFound();
 
@@ -60,7 +60,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 				{
 					System.IO.File.Delete(form.file_path);
 				}
-
+				data.id_system = form.id_system;
 				file_name = Path.GetFileNameWithoutExtension(form.file.FileName);
 				file_ext = Path.GetExtension(form.file.FileName);
 				data.file_name = file_name + "__" + DateTime.Now.ToString("yyyyMMddHHmmss");
@@ -74,7 +74,6 @@ namespace CPOC_AIMS_II_Backend.Controllers
 				data.file_path = path;
 				data.file_type = file_ext;
 			}
-			data.id_system = form.id_system;
 			data.note = form.note;
 			data.updated_by = form.updated_by;
 			data.updated_date = DateTime.Now;
@@ -87,9 +86,9 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			}
 			catch (DbUpdateConcurrencyException)
 			{
-				if (!CMERProbeLibraryExists(id))
+				if (!CMTagRegistrationLibraryExists(id))
 				{
-					return NotFound($"CMERProbeLibrary with ID {id} not found.");
+					return NotFound($"CMTagRegistrationLibrary with ID {id} not found.");
 				}
 				else
 				{
@@ -101,9 +100,9 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<CMERProbeLibrary>> PostCMERProbeLibrary([FromForm] CMERProbeLibraryFileUpload form)
+		public async Task<ActionResult<CMTagRegistrationLibrary>> PostCMTagRegistrationLibrary([FromForm] CMTagRegistrationLibraryFileUpload form)
 		{
-			CMERProbeLibrary data = new CMERProbeLibrary();
+			CMTagRegistrationLibrary data = new CMTagRegistrationLibrary();
 			string path = "";
 			string file_name = "";
 			string file_ext = "";
@@ -113,7 +112,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 				{
 					Directory.CreateDirectory("wwwroot/attach/cm-er-probe-lib/");
 				}
-
+				data.id_system = form.id_system;
 				file_name = Path.GetFileNameWithoutExtension(form.file.FileName);
 				file_ext = Path.GetExtension(form.file.FileName);
 				data.file_name = file_name + "__" + DateTime.Now.ToString("yyyyMMddHHmmss");
@@ -127,23 +126,22 @@ namespace CPOC_AIMS_II_Backend.Controllers
 				data.file_path = path;
 				data.file_type = file_ext;
 			}
-			data.id_system = form.id_system;
 			data.note = form.note;
 			data.created_by = form.created_by;
 			data.created_date = DateTime.Now;
 			data.updated_by = form.updated_by;
 			data.updated_date = DateTime.Now;
 
-			_context.CMERProbeLibrary.Add(data);
+			_context.CMTagRegistrationLibrary.Add(data);
 			await _context.SaveChangesAsync();
 
-			return CreatedAtAction("GetCMERProbeLibrary", new { id = data.id }, data);
+			return CreatedAtAction("GetCMTagRegistrationLibrary", new { id = data.id }, data);
 		}
 
 		[HttpDelete("{id}")]
-		public async Task<IActionResult> DeleteCMERProbeLibrary(int id)
+		public async Task<IActionResult> DeleteCMTagRegistrationLibrary(int id)
 		{
-			var data = await _context.CMERProbeLibrary.FindAsync(id);
+			var data = await _context.CMTagRegistrationLibrary.FindAsync(id);
 
 			if (data == null)
 			{
@@ -155,15 +153,15 @@ namespace CPOC_AIMS_II_Backend.Controllers
 				System.IO.File.Delete(data.file_path);
 			}
 
-			_context.CMERProbeLibrary.Remove(data);
+			_context.CMTagRegistrationLibrary.Remove(data);
 			await _context.SaveChangesAsync();
 
 			return NoContent();
 		}
 
-		private bool CMERProbeLibraryExists(int id)
+		private bool CMTagRegistrationLibraryExists(int id)
 		{
-			return _context.CMERProbeLibrary.Any(e => e.id == id);
+			return _context.CMTagRegistrationLibrary.Any(e => e.id == id);
 		}
 	}
 }

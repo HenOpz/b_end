@@ -3,7 +3,7 @@ namespace CPOC_AIMS_II_Backend.Models
 	public class CMCorrosionCouponLibrary
 	{
 		public int id { get; set; }
-		public int id_tag { get; set; }
+		public int? id_system { get; set; }
 		public string? file_path { get; set; }
 		public string? file_type { get; set; }
 		public string? file_name { get; set; }
@@ -17,7 +17,7 @@ namespace CPOC_AIMS_II_Backend.Models
 	public class CMCorrosionCouponLibraryFileUpload
 	{
 		public int id { get; set; }
-		public int id_tag { get; set; }
+		public int? id_system { get; set; }
 		public IFormFile? file { get; set; }
 		public string? file_path { get; set; }
 		public string? file_type { get; set; }

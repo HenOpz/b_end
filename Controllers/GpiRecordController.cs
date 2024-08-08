@@ -23,7 +23,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 		}
 
 		[HttpGet("{id}")]
-		public async Task<ActionResult<GpiRecord>> GetGpiRecord(int id)
+		public async Task<ActionResult<dynamic>> GetGpiRecord(int id)
 		{
 			var data = await _context.GpiRecord.Where(a => (a.is_active == true) && (a.id == id)).FirstOrDefaultAsync();
 
@@ -31,8 +31,53 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			{
 				return NotFound();
 			}
+			
+			var txn = await _context.GpiRecordTXN.OrderBy(a => a.id).Where(a => a.id_gpi == data.id).ToListAsync();
 
-			return data;
+			int seq = 1;
+			var app_data = new List<GpiRecordApprovalSeq>();
+			var userInf = await _context.UserInfo.ToListAsync();
+			var comp = await _context.MdUserCompany.ToListAsync();
+			foreach (var row in txn)
+			{
+				if (row.seq == seq)
+				{
+					if (row.id_status == 1 || row.id_status == 3)
+					{
+						var uif = userInf.Where(a => a.id == row.id_user_info).FirstOrDefault();
+						var cmp = uif != null ? comp.FirstOrDefault(a => a.id == uif.id_company) : null;
+						var sub = new GpiRecordApprovalSeq
+						{
+							id_user = row.id_user,
+							id_user_info = row.id_user_info,
+							seq = row.seq,
+							id_status = row.id_status,
+							txn_datetime = row.txn_datetime,
+							name = uif != null ? uif.name : null,
+							position = uif != null ? uif.position : null,
+							signature = uif != null ? uif.signature : null,
+							company = cmp != null ? cmp.company_name : null,
+						};
+						app_data.Add(sub);
+						seq = seq + 1;
+					}
+					if (row.id_status == 4)
+					{
+						if (app_data.Count == 1)
+						{
+							app_data.Clear();
+							seq = 1;
+						}
+						else
+						{
+							app_data.RemoveAt(app_data.Count - 1);
+							seq = seq - 1;
+						}
+					}
+				}
+			}
+
+			return  new { data, app_data };
 		}
 
 		[HttpGet]
@@ -99,12 +144,12 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			{
 				return BadRequest("ID mismatch between URL and body.");
 			}
-			var auth = await _context.GpiRecordAuth.Where(a => a.id_discipline == data.id_discipline).ToListAsync();
+			var auth = await _context.GpiRecordAuth.Where(a => a.id_discipline == data.id_discipline).OrderByDescending(a => a.seq).FirstOrDefaultAsync();
 			if (auth == null)
 			{
 				return BadRequest("Authentication is invalid");
 			}
-			data.max_auth_seq = auth.Count + 1;
+			data.max_auth_seq = auth.seq;
 			data.updated_date = DateTime.Now;
 
 			try
@@ -134,12 +179,12 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			{
 				try
 				{
-					var auth = await _context.GpiRecordAuth.Where(a => a.id_discipline == data.id_discipline).ToListAsync();
-					if (!auth.Any())
+					var auth = await _context.GpiRecordAuth.Where(a => a.id_discipline == data.id_discipline).OrderByDescending(a => a.seq).FirstOrDefaultAsync();
+					if (auth == null)
 					{
 						return BadRequest("Authentication is invalid");
 					}
-					data.max_auth_seq = auth.Count + 1;
+					data.max_auth_seq = auth.seq;
 					data.id_status = 1;
 					data.gpi_number = GenReportNo((DateTime)data.gpi_date);
 					data.created_date = DateTime.Now;

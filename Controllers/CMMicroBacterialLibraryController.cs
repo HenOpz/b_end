@@ -35,13 +35,6 @@ namespace CPOC_AIMS_II_Backend.Controllers
 			return data;
 		}
 
-		// GET: api/CMMicroBacterialLibrary/ByTag/5
-		[HttpGet("ByTag/{id_tag}")]
-		public async Task<ActionResult<IEnumerable<CMMicroBacterialLibrary>>> GetCMMicroBacterialLibraryByTag(int id_tag)
-		{
-			return await _context.CMMicroBacterialLibrary.Where(b => b.id_tag == id_tag).ToListAsync();
-		}
-
 		// POST: api/CMMicroBacterialLibrary
 		[HttpPost]
 		public async Task<IActionResult> PostCMMicroBacterialLibrary([FromForm] CMMicroBacterialLibraryUpload form)
@@ -68,8 +61,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 						await form.file.CopyToAsync(steam);
 					}
 				}
-
-				data.id_tag = form.id_tag;
+				data.id_system = form.id_system;
 				data.note = form.note;
 				data.created_by = form.created_by;
 				data.created_date = DateTime.Now;
@@ -146,8 +138,7 @@ namespace CPOC_AIMS_II_Backend.Controllers
 						}
 					}
 				}
-				
-				data.id_tag = form.id_tag;
+				data.id_system = form.id_system;
 				data.note = form.note;
 				data.updated_by = form.updated_by;
 				data.updated_date = DateTime.Now;

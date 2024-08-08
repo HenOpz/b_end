@@ -64,6 +64,94 @@ namespace CPOC_AIMS_II_Backend.Controllers
 
 			return Ok(data);
 		}
+		
+		[HttpGet]
+		[Route("get-failure-action-record-long-term-for-summary")]
+		public async Task<IActionResult> GetFailureActionRecordLongtermForSummary()
+		{
+			var fa = await _context.FailureRecord.Where(a => a.is_active == true && a.is_rcfa == false).Select(a => a.id).ToListAsync();
+			Dictionary<string, object> result = new Dictionary<string, object>();
+			var data = await GetFailureActionRecordQuery().Where(a => fa.Contains(a.id_failure) && a.action_type == "long-term" && a.is_active == true).ToListAsync();
+
+			if (data.Count == 0)
+			{
+				return NotFound(new { message = "NoActionRecorded" });
+			}
+			
+			foreach(var item in data)
+			{
+				var sap = await _context.SapHeader.Where(a => a.id_module == 2 && a.id_from_module == item.id).ToListAsync();
+				result.Add(item.fa_number, new {action = item , sap});
+			}
+
+			return Ok(result);
+		}
+		
+		[HttpGet]
+		[Route("get-failure-action-record-short-term-for-summary")]
+		public async Task<IActionResult> GetFailureActionRecordShorttermForSummary()
+		{
+			var fa = await _context.FailureRecord.Where(a => a.is_active == true && a.is_rcfa == false).Select(a => a.id).ToListAsync();
+			Dictionary<string, object> result = new Dictionary<string, object>();
+			var data = await GetFailureActionRecordQuery().Where(a => fa.Contains(a.id_failure) && a.action_type == "short-term" && a.is_active == true).ToListAsync();
+
+			if (data.Count == 0)
+			{
+				return NotFound(new { message = "NoActionRecorded" });
+			}
+			
+			foreach(var item in data)
+			{
+				var sap = await _context.SapHeader.Where(a => a.id_module == 2 && a.id_from_module == item.id).ToListAsync();
+				result.Add(item.fa_number, new {action = item , sap});
+			}
+
+			return Ok(result);
+		}
+		
+		[HttpGet]
+		[Route("get-failure-action-record-long-term-rcfa-for-summary")]
+		public async Task<IActionResult> GetFailureActionRecordLongtermRCFAForSummary()
+		{
+			var fa = await _context.FailureRecord.Where(a => a.is_active == true && a.is_rcfa == true).Select(a => a.id).ToListAsync();
+			Dictionary<string, object> result = new Dictionary<string, object>();
+			var data = await GetFailureActionRecordQuery().Where(a => fa.Contains(a.id_failure) && a.action_type == "long-term" && a.is_active == true).ToListAsync();
+
+			if (data.Count == 0)
+			{
+				return NotFound(new { message = "NoActionRecorded" });
+			}
+			
+			foreach(var item in data)
+			{
+				var sap = await _context.SapHeader.Where(a => a.id_module == 2 && a.id_from_module == item.id).ToListAsync();
+				result.Add(item.fa_number, new {action = item , sap});
+			}
+
+			return Ok(result);
+		}
+		
+		[HttpGet]
+		[Route("get-failure-action-record-short-term-rcfa-for-summary")]
+		public async Task<IActionResult> GetFailureActionRecordShorttermRCFAForSummary()
+		{
+			var fa = await _context.FailureRecord.Where(a => a.is_active == true && a.is_rcfa == true).Select(a => a.id).ToListAsync();
+			Dictionary<string, object> result = new Dictionary<string, object>();
+			var data = await GetFailureActionRecordQuery().Where(a => fa.Contains(a.id_failure) && a.action_type == "short-term" && a.is_active == true).ToListAsync();
+
+			if (data.Count == 0)
+			{
+				return NotFound(new { message = "NoActionRecorded" });
+			}
+			
+			foreach(var item in data)
+			{
+				var sap = await _context.SapHeader.Where(a => a.id_module == 2 && a.id_from_module == item.id).ToListAsync();
+				result.Add(item.fa_number, new {action = item , sap});
+			}
+
+			return Ok(result);
+		}
 
 		[HttpPut("{id}")]
 		public async Task<IActionResult> PutFailureActionRecord(int id, FailureActionRecord data)

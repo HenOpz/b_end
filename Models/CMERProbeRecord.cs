@@ -11,6 +11,7 @@ namespace CPOC_AIMS_II_Backend.Models
 		public decimal? metal_loss { get; set; }
 		public decimal? corrosion_rate { get; set; }
 		public string? note { get; set; }
+		public int? id_probe_status { get; set; }
 		public int? created_by { get; set; }
 		public DateTime? created_date { get; set; }
 		public int? updated_by { get; set; }
